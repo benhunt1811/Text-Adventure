@@ -1,0 +1,183 @@
+import time
+import random
+
+# Starting Location
+valuex = 3
+valuey = 3
+
+# List for inventory
+inventory = []
+
+# Dictionary storing locations and their descriptions
+Dictionary = {(0, 0): "There is a small petrol station",
+              (3, 0): "There is a large field with grass",
+              (6, 0): "There are large vines blocking an odd potion",
+              (0, 3): "There is a large bush",
+              (3, 3): "Start",
+              (6, 3): "Theres a car, no keys",
+              (0, 6): "There is an abandoned petshop",
+              (3, 6): "There is a house, you hear something inside it",
+              (6, 6): "There is a large ghoul in your way with impenetrable skin, behind him is a key"
+
+              }
+
+# Dictionary for storing interactions for each location
+Interactive_Dictionary = {(0, 0): "sword",
+                          (3, 0): "there is nothing nearby, just a thick fog",
+                          (6, 0): "invisibility potion",
+                          (0, 3): "you look inside, there was a nice squirrel",
+                          (3, 3): "theres a crossroads in the middle of the town",
+                          (6, 3): "house key",
+                          (0, 6): "You walk in but there's no animals left",
+                          (3, 6): "house key",
+                          (6, 6): "car key"
+
+                          }
+
+
+# Function for interacting with the invisibility potion
+def invisibility_potion(valuex, valuey):
+    inven_choice = input("You think maybe something could cut down the vines\nWhich item will you use?: ")
+    if inven_choice == "sword" and "sword" in inventory:
+        print("you have cut down the vines and gained an invisibility potion")
+        inventory.append(Interactive_Dictionary[valuex, valuey])
+        Interactive_Dictionary[valuex, valuey] = "nothing"
+        Dictionary[valuex, valuey] = "there is cut down vines"
+    if inven_choice != "sword":
+        print("Wrong choice!")
+    main_loop(valuex, valuey)
+
+
+# Function for interacting with the ghoul
+def ghoul(valuex, valuey):
+    inven_choice = input("Which item will you use?: ")
+    if inven_choice == "invisibility potion" and "invisibility potion" in inventory:
+        print("You have snuck past the ghoul, you couldn't have killed him anyway!")
+        inventory.append(Interactive_Dictionary[valuex, valuey])
+        Interactive_Dictionary[valuex, valuey] = "nothing"
+        Dictionary[valuex, valuey] = "the ghoul remains but the key is gone!"
+    if inven_choice != "invisibility potion":
+        print("Wrong choice!")
+    main_loop(valuex, valuey)
+
+# Function for interacting with the car
+def car(valuex, valuey):
+    inven_choice = input("Which item will you use?: ")
+    if inven_choice == "car key" and "car key" in inventory:
+        print("You open the trunk of the car, only to find a house key")
+        inventory.append(Interactive_Dictionary[valuex, valuey])
+        Interactive_Dictionary[valuex, valuey] = "nothing"
+        Dictionary[valuex, valuey] = "theres a car with an empty trunk"
+    else:
+        print("Wrong choice!")
+    main_loop(valuex, valuey)
+
+# Function for interacting with the sword
+def sword(valuex, valuey):
+    Pick_up = input("you look around the shop and find an old rusty sword in the corner\npick up item?: ")
+    if Pick_up == "yes":
+        inventory.append(Interactive_Dictionary[valuex, valuey])
+        Interactive_Dictionary[valuex, valuey] = "there's nothing there now"
+        Dictionary[valuex, valuey] = "theres an empty petrol station"
+    main_loop(valuex, valuey)
+
+# Function for interacting with the house
+def house(valuex, valuey):
+    inven_choice = input("Which item will you use?: ")
+    if inven_choice == "house key" and "house key" in inventory:
+        while True:
+            print("You open the door to the old house, the door slamming shut behind you\nthere is a female ghost standing in the middle of the room.")
+            choice = input("do you kill or spare her?: ")
+            if choice == "kill":
+                print("the ghost disolves into air, and the corpse of your wife appears lifeless on the floor\nyou have the bad ending")
+                exit()
+            if choice == "spare":
+                print("the ghoslves it dissolves into air, your wife appears from the haze, unharmed, as the haze ends\nyou have the good ending")
+                exit()
+    else:
+        print("Wrong choice!")
+        main_loop(valuex, valuey)
+
+# Function for printing out descriptions for areas
+def description(valuex, valuey):
+    print(Interactive_Dictionary[valuex, valuey])
+
+# Function for printing hint parrots lines
+def parrot(valuex, valuey):
+    text = random.randint(1, 3)
+    print("you find a helpful parrot who gives many tips!")
+    if text == 1:
+        print("you'll never kill the ghoul, you have to sneak around SQUAAAAAARK!")
+    if text == 2:
+        print("there seems to be something in the petrol station SQUAAAAAARK!")
+    if text == 3:
+        print("make sure to check your inventory SQUAAAAAARK!")
+    main_loop(valuex, valuey)
+
+
+# Printing out main story for the game as well as how to play
+print("Welcome to Haze. A text based adventure in which your character Jake ends up in a small town after the loss of his wife, but he soon realises the town has a dark secret...\n\n")
+
+time.sleep(4)
+
+# List of actions for the player
+print("Directions: \n1. up \n2. down \n3. left \n4. right \n\nOther:\n5. interact -  lets you explore an area further and find items \n6. inventory - shows you your current items\n")
+
+time.sleep(4)
+
+
+# Function for the main loops
+def main_loop(valuex, valuey):
+    print(Dictionary[valuex, valuey])
+# While loop for taking player input for directions
+    while True:
+        choice = input("What do you do?: ")
+        if choice == "up":
+            if valuey == 6:
+                print("Incorrect way, choose again ")
+                continue
+            else:
+                valuey = valuey + 3
+        if choice == "right":
+            if valuex == 6:
+                print("Incorrect way, choose again ")
+                continue
+            else:
+                valuex = valuex + 3
+        if choice == "down":
+            if valuey == 0:
+                print("Incorrect way, choose again ")
+                continue
+            else:
+                valuey = valuey - 3
+        if choice == "left":
+            if valuex == 0:
+                print("Incorrect way, choose again ")
+                continue
+            else:
+                valuex = valuex - 3
+# If statements for players interacting
+        if choice == "interact":
+            if (Dictionary[(valuex, valuey)] == "There are large vines blocking an odd potion"):
+                invisibility_potion(valuex, valuey)
+            if (Dictionary[
+                (valuex, valuey)] == "There is a large ghoul in your way with impenetrable skin, behind him is a key"):
+                ghoul(valuex, valuey)
+            if (Dictionary[(valuex, valuey)] == "Theres a car, no keys"):
+                car(valuex, valuey)
+            if (Dictionary[(valuex, valuey)] == "There is a small petrol station"):
+                sword(valuex, valuey)
+            if (Dictionary[(valuex, valuey)] == "There is a house, you hear something inside it"):
+                house(valuex, valuey)
+            if (Dictionary[(valuex, valuey)] == "There is an abandoned petshop"):
+                parrot(valuex, valuey)
+            else:
+                description(valuex, valuey)
+# If statement for players checking inventory
+        if choice == "inventory":
+            print(inventory)
+
+        print(Dictionary[valuex, valuey])
+
+
+main_loop(valuex, valuey)
